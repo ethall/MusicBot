@@ -1803,12 +1803,12 @@ class MusicBot(discord.Client):
         return Response(":hear_no_evil:", delete_after=20)
 
     async def cmd_restart(self, channel):
-        await self.safe_send_message(channel, ":wave:")
+        await self.safe_send_message(channel, ":recycle:")
         await self.disconnect_all_voice_clients()
         raise exceptions.RestartSignal
 
     async def cmd_shutdown(self, channel):
-        await self.safe_send_message(channel, ":wave:")
+        await self.safe_send_message(channel, ":coffin:")
         await self.disconnect_all_voice_clients()
         raise exceptions.TerminateSignal
 

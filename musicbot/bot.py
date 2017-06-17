@@ -1128,6 +1128,161 @@ class MusicBot(discord.Client):
         return Response("Enqueued {} songs to be played in {} seconds".format(
             songs_added, self._fixg(ttime, 1)), delete_after=30)
 
+    def _invalid_char_check(self, filename):
+        """Checks for invalid file characters.
+
+        Returns:
+            `True` if an invalid character exists, `False` otherwise.
+        """
+
+        if ('.' in filename \
+            or '\\' in filename \
+            or '/' in filename \
+            or ':' in filename \
+            or '*' in filename \
+            or '?' in filename \
+            or '\"' in filename \
+            or '<' in filename \
+            or '>' in filename \
+            or '|' in filename
+           ):
+            return True
+        else:
+            return False
+
+    async def cmd_pldelete(self, author, leftover_args):
+        """
+        Usage:
+            {command_prefix}delete name
+
+        Deletes a custom playlist.
+        - name: playlist name
+        """
+
+        if len(leftover_args) == 0:
+            return Response("```" + self.cmd_pldelete.__doc__ + "```", delete_after=20)
+
+        if self._invalid_char_check(leftover_args[0]):
+            return Response("The following characters are not allowed in playlist names:\n```. \ / : * ? \" < > |```", delete_after=10)
+
+        playlist = "./{}/{}/{}".format('playlists', author.id, leftover_args[0])
+        if os.path.exists(playlist):
+            os.remove(playlist)
+
+        return Response("Deleted playlist _{}_".format(leftover_args[0]), delete_after=30)
+
+    async def cmd_pllist(self, author):
+        """
+        Usage:
+            {command_prefix}pllist
+
+        Lists all user playlists.
+        """
+
+        import glob
+
+        message = "```"
+
+        pl_home = "./{}/{}".format("playlists", author.id)
+        files = glob.glob("{}/{}".format(pl_home, "*"))
+
+        for f in files:
+            message += "\n" + os.path.basename(f)
+
+        message += "\n```"
+
+        if len(files) == 0:
+            return Response("There's nothing here...", delete_after=20)
+        else:
+            return Response("{}".format(message), delete_after=60)
+
+    async def cmd_plplay(self, player, channel, author, permissions, leftover_args):
+        """
+        Usage:
+            {command_prefix}plplay name
+
+        Queues a user playlist.
+        - name: playlist name
+        """
+
+        if len(leftover_args) == 0:
+            return Response("```" + self.cmd_plplay.__doc__ + "```", delete_after=20)
+
+        if self._invalid_char_check(leftover_args[0]):
+            return Response("The following characters are not allowed in playlist names:\n```. \ / : * ? \" < > |```", delete_after=10)
+
+        playlist = "./{}/{}/{}".format('playlists', author.id, leftover_args[0])
+        if not os.path.exists(playlist):
+            return Response("Playlist _{}_ doesn't exist".format(leftover_args[0]), delete_after=10)
+        else:
+            with open(playlist, 'r') as pl_file:
+                while True:
+                    line = pl_file.readline()
+                    line = line.rstrip()
+                    if not line:
+                        break
+                    else:
+                        await self.cmd_play(player, channel, author, permissions, (), line)
+
+    async def cmd_plsave(self, author, leftover_args):
+        """
+        Usage:
+            {command_prefix}save name URLs
+
+        Saves a custom playlist.
+        - name: playlist name
+        - URLs: a list of URLs separated by spaces
+        """
+
+        if len(leftover_args) == 0:
+            return Response("```" + self.cmd_plsave.__doc__ + "```", delete_after=20)
+
+        if self._invalid_char_check(leftover_args[0]):
+            return Response("The following characters are not allowed in playlist names:\n```. \ / : * ? \" < > |```", delete_after=10)
+
+        pl_home = "./{}/{}".format('playlists', author.id)
+        if not os.path.exists(pl_home):
+            os.makedirs(pl_home)
+
+        playlist = "{}/{}".format(pl_home, leftover_args[0])
+
+        if os.path.exists(playlist):
+            return Response("Playlist _{}_ already exists.".format(leftover_args[0]), delete_after=10)
+        else:
+            if len(leftover_args[1:]) == 0:
+                return Response("No URLs found. Playlist not created.", delete_after=10)
+            with open(playlist, 'w') as pl_file:
+                for u in leftover_args[1:]:
+                    pl_file.write("{}\n".format(u))
+
+        return Response("Created playlist _{}_".format(leftover_args[0]), delete_after=60)
+
+    async def cmd_plupdate(self, author, leftover_args):
+        """
+        Usage:
+            {command_prefix}update name URLs
+
+        Adds new urls to an existing playlist.
+        - name: playlist name
+        - URLs: a list of URLs separated by spaces
+        """
+
+        if len(leftover_args) == 0:
+            return Response("```" + self.cmd_plupdate.__doc__ + "```", delete_after=20)
+
+        if self._invalid_char_check(leftover_args[0]):
+            return Response("The following characters are not allowed in playlist names:\n```. \ / : * ? \" < > |```", delete_after=10)
+
+        playlist = "./{}/{}/{}".format('playlists', author.id, leftover_args[0])
+        if os.path.exists(playlist):
+            if len(leftover_args[1:]) == 0:
+                return Response("No URLs found. Playlist not updated.", delete_after=10)
+            with open(playlist, 'a') as pl_file:
+                for u in leftover_args[1:]:
+                    pl_file.write("{}\n".format(u))
+
+        return Response("Updated playlist _{}_".format(leftover_args[0]), delete_after=60)
+
     async def cmd_search(self, player, channel, author, permissions, leftover_args):
         """
         Usage:

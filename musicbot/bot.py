@@ -146,7 +146,7 @@ class MusicBot(discord.Client):
         if owner:
             self.safe_print("Found owner in \"%s\", attempting to join..." % owner.voice_channel.name)
             # TODO: Effort
-            await self.cmd_summon(owner.voice_channel, owner, None)
+            await self.cmd_baby_come_back(owner.voice_channel, owner, None)
             return owner.voice_channel
 
     async def _autojoin_channels(self, channels):
@@ -1443,7 +1443,7 @@ class MusicBot(discord.Client):
                 delete_after=30
             )
 
-    async def cmd_summon(self, channel, author, voice_channel):
+    async def cmd_baby_come_back(self, channel, author, voice_channel):
         """
         Usage:
             {command_prefix}summon

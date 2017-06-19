@@ -1152,14 +1152,14 @@ class MusicBot(discord.Client):
     async def cmd_pldelete(self, author, leftover_args):
         """
         Usage:
-            {command_prefix}delete name
+            {command_prefix}pldelete name
 
         Deletes a custom playlist.
         - name: playlist name
         """
 
         if len(leftover_args) == 0:
-            return Response("```" + self.cmd_pldelete.__doc__ + "```", delete_after=20)
+            return self.cmd_help(command='pldelete')
 
         if self._invalid_char_check(leftover_args[0]):
             return Response("The following characters are not allowed in playlist names:\n```. \ / : * ? \" < > |```", delete_after=10)
@@ -1205,7 +1205,7 @@ class MusicBot(discord.Client):
         """
 
         if len(leftover_args) == 0:
-            return Response("```" + self.cmd_plplay.__doc__ + "```", delete_after=20)
+            return self.cmd_help(command='plplay')
 
         if self._invalid_char_check(leftover_args[0]):
             return Response("The following characters are not allowed in playlist names:\n```. \ / : * ? \" < > |```", delete_after=10)
@@ -1226,7 +1226,7 @@ class MusicBot(discord.Client):
     async def cmd_plsave(self, author, leftover_args):
         """
         Usage:
-            {command_prefix}save name URLs
+            {command_prefix}plsave name URLs
 
         Saves a custom playlist.
         - name: playlist name
@@ -1234,7 +1234,7 @@ class MusicBot(discord.Client):
         """
 
         if len(leftover_args) == 0:
-            return Response("```" + self.cmd_plsave.__doc__ + "```", delete_after=20)
+            return self.cmd_help(command='plsave')
 
         if self._invalid_char_check(leftover_args[0]):
             return Response("The following characters are not allowed in playlist names:\n```. \ / : * ? \" < > |```", delete_after=10)
@@ -1259,7 +1259,7 @@ class MusicBot(discord.Client):
     async def cmd_plupdate(self, author, leftover_args):
         """
         Usage:
-            {command_prefix}update name URLs
+            {command_prefix}plupdate name URLs
 
         Adds new urls to an existing playlist.
         - name: playlist name
@@ -1267,7 +1267,7 @@ class MusicBot(discord.Client):
         """
 
         if len(leftover_args) == 0:
-            return Response("```" + self.cmd_plupdate.__doc__ + "```", delete_after=20)
+            return self.cmd_help(command='plupdate')
 
         if self._invalid_char_check(leftover_args[0]):
             return Response("The following characters are not allowed in playlist names:\n```. \ / : * ? \" < > |```", delete_after=10)

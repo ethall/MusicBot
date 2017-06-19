@@ -1168,7 +1168,7 @@ class MusicBot(discord.Client):
         if os.path.exists(playlist):
             os.remove(playlist)
 
-        return Response("Deleted playlist _{}_".format(leftover_args[0]), delete_after=30)
+        return Response("Deleted playlist `{}`".format(leftover_args[0]), delete_after=30)
 
     async def cmd_pllist(self, author):
         """
@@ -1212,7 +1212,7 @@ class MusicBot(discord.Client):
 
         playlist = "./{}/{}/{}".format('playlists', author.id, leftover_args[0])
         if not os.path.exists(playlist):
-            return Response("Playlist _{}_ doesn't exist".format(leftover_args[0]), delete_after=10)
+            return Response("Playlist `{}` doesn't exist".format(leftover_args[0]), delete_after=10)
         else:
             with open(playlist, 'r') as pl_file:
                 while True:
@@ -1246,7 +1246,7 @@ class MusicBot(discord.Client):
         playlist = "{}/{}".format(pl_home, leftover_args[0])
 
         if os.path.exists(playlist):
-            return Response("Playlist _{}_ already exists.".format(leftover_args[0]), delete_after=10)
+            return Response("Playlist `{}` already exists.".format(leftover_args[0]), delete_after=10)
         else:
             if len(leftover_args[1:]) == 0:
                 return Response("No URLs found. Playlist not created.", delete_after=10)
@@ -1254,7 +1254,7 @@ class MusicBot(discord.Client):
                 for u in leftover_args[1:]:
                     pl_file.write("{}\n".format(u))
 
-        return Response("Created playlist _{}_".format(leftover_args[0]), delete_after=60)
+        return Response("Created playlist `{}`".format(leftover_args[0]), delete_after=60)
 
     async def cmd_plupdate(self, author, leftover_args):
         """
@@ -1280,7 +1280,7 @@ class MusicBot(discord.Client):
                 for u in leftover_args[1:]:
                     pl_file.write("{}\n".format(u))
 
-        return Response("Updated playlist _{}_".format(leftover_args[0]), delete_after=60)
+        return Response("Updated playlist `{}`".format(leftover_args[0]), delete_after=60)
 
     async def cmd_search(self, player, channel, author, permissions, leftover_args):
         """
